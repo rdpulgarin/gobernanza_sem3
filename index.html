@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mural Digital – Gobernanza de Datos | Tech Commerce</title>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy:    #0b1b35;
+      --cobalt:  #1a3a6e;
+      --azure:   #1769c5;
+      --sky:     #3a9bdc;
+      --gold:    #e8b84b;
+      --cream:   #f7f2e8;
+      --white:   #ffffff;
+      --text-dk: #0d1520;
+      --text-lt: #d6e4f5;
+    }
+
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── UTILITY ── */
+    section { position: relative; z-index: 1; }
+    .display-font { font-family: 'Playfair Display', serif; }
+    .gold { color: var(--gold); }
+    .sky  { color: var(--sky); }
+    .tag {
+      display: inline-block;
+      background: rgba(231,184,75,.15);
+      border: 1px solid rgba(231,184,75,.4);
+      color: var(--gold);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .25rem .75rem;
+      border-radius: 100px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(26,58,110,.8) 0%, transparent 70%),
+        linear-gradient(175deg, #091526 0%, #0b1b35 60%, #0d2248 100%);
+      display: flex; align-items: center;
+      padding: 6rem 0 4rem;
+      overflow: hidden;
+    }
+    .hero__grid-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(55,140,220,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(55,140,220,.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .hero__title {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+    .hero__sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-lt);
+      font-weight: 300;
+      max-width: 540px;
+    }
+    .hero__badge-strip {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      margin-top: 2rem;
+    }
+    .hero__scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      opacity: .5; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* Diagonal ribbon */
+    .hero__ribbon {
+      position: absolute; top: 0; right: -80px;
+      width: 520px; height: 100%;
+      background: linear-gradient(135deg, rgba(23,105,197,.18) 0%, rgba(58,155,220,.08) 100%);
+      transform: skewX(-8deg);
+      border-left: 1px solid rgba(58,155,220,.2);
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-strip {
+      background: linear-gradient(90deg, var(--cobalt) 0%, #0f2850 100%);
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 2rem 0;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 1rem;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .stat-card:last-child { border-right: none; }
+    .stat-card__num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem; font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-card__label { font-size: .8rem; color: var(--text-lt); margin-top: .35rem; }
+
+    /* ── SECTION HEADERS ── */
+    .section-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.15;
+    }
+    .divider {
+      width: 48px; height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin: 1rem 0 1.8rem;
+    }
+
+    /* ── PROBLEM BLOCK ── */
+    .problems {
+      padding: 5rem 0;
+      background: var(--navy);
+    }
+    .problem-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      padding: 2rem;
+      height: 100%;
+      transition: transform .3s, border-color .3s;
+    }
+    .problem-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(231,184,75,.35);
+    }
+    .problem-card__icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .ic-red   { background: rgba(220,53,69,.12);  color: #ff6b7a; }
+    .ic-amber { background: rgba(255,170,0,.12);  color: var(--gold); }
+    .ic-blue  { background: rgba(23,105,197,.15); color: var(--sky); }
+
+    /* ── GOVERNANCE FRAMEWORK ── */
+    .framework {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, #0d2248 0%, var(--navy) 100%);
+      position: relative; overflow: hidden;
+    }
+    .framework::before {
+      content: '';
+      position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(23,105,197,.12) 0%, transparent 70%);
+    }
+    .fw-pillar {
+      background: linear-gradient(145deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 1.75rem;
+      height: 100%;
+      position: relative; overflow: hidden;
+      transition: box-shadow .3s, transform .3s;
+    }
+    .fw-pillar:hover {
+      box-shadow: 0 8px 40px rgba(23,105,197,.2);
+      transform: translateY(-3px);
+    }
+    .fw-pillar__num {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem; font-weight: 900;
+      position: absolute; top: -.4rem; right: 1rem;
+      opacity: .06; color: var(--sky);
+      line-height: 1;
+    }
+    .fw-pillar__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      margin-bottom: .6rem;
+      color: var(--gold);
+    }
+    .fw-pillar__body { font-size: .9rem; color: var(--text-lt); line-height: 1.65; }
+
+    /* ── LIFECYCLE ── */
+    .lifecycle {
+      padding: 5rem 0;
+      background: var(--navy);
+    }
+    .lifecycle-step {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.05);
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,.02);
+      transition: border-color .3s;
+    }
+    .lifecycle-step:hover { border-color: rgba(58,155,220,.35); }
+    .ls-num {
+      min-width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--azure);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+      flex-shrink: 0;
+    }
+    .ls-title { font-weight: 600; margin-bottom: .3rem; }
+    .ls-body  { font-size: .87rem; color: var(--text-lt); line-height: 1.6; }
+
+    /* Visual diagram */
+    .diagram-ring {
+      position: relative;
+      width: 340px; height: 340px;
+      margin: 0 auto;
+    }
+    .dr-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      background: radial-gradient(circle, #1a3a6e, #0b1b35);
+      border: 2px solid var(--azure);
+      border-radius: 50%;
+      width: 130px; height: 130px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      box-shadow: 0 0 40px rgba(23,105,197,.3);
+    }
+    .dr-orbit {
+      position: absolute; inset: 0;
+      border: 1px dashed rgba(58,155,220,.25);
+      border-radius: 50%;
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .dr-node {
+      position: absolute;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--cobalt);
+      border: 2px solid var(--azure);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      font-size: .7rem; font-weight: 600;
+      color: var(--sky);
+      line-height: 1.2;
+      transform: translate(-50%, -50%);
+    }
+    .dr-node i { font-size: 1.2rem; margin-bottom: .15rem; color: var(--gold); }
+    /* position by angle */
+    .dn-0  { top:  0%;   left: 50%; }
+    .dn-1  { top: 25%;   left: 95%; }
+    .dn-2  { top: 75%;   left: 95%; }
+    .dn-3  { top: 100%;  left: 50%; }
+    .dn-4  { top: 75%;   left:  5%; }
+    .dn-5  { top: 25%;   left:  5%; }
+
+    /* ── ROLES TABLE ── */
+    .roles {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, var(--navy) 0%, #0d2248 100%);
+    }
+    .role-row {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .role-row:hover { background: rgba(255,255,255,.02); }
+    .role-badge {
+      min-width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .role-title   { font-weight: 600; font-size: .95rem; }
+    .role-resp    { font-size: .83rem; color: var(--text-lt); margin-top: .2rem; line-height: 1.55; }
+
+    /* ── PRIVACY & SECURITY ── */
+    .security {
+      padding: 5rem 0;
+      background: var(--navy);
+    }
+    .sec-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      padding: 2rem 1.75rem;
+      height: 100%;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .sec-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.3);
+    }
+    .sec-icon {
+      font-size: 2.2rem; margin-bottom: 1rem;
+      display: block;
+    }
+    .sec-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: .5rem; }
+
+    /* ── RESULTS ── */
+    .results {
+      padding: 5rem 0;
+      background: linear-gradient(135deg, #0d2248 0%, #1a3a6e 50%, #0b1b35 100%);
+      position: relative; overflow: hidden;
+    }
+    .results::after {
+      content: '';
+      position: absolute; bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,184,75,.06) 0%, transparent 70%);
+    }
+    .result-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: 2.25rem;
+      text-align: center;
+      height: 100%;
+      transition: transform .3s;
+    }
+    .result-card:hover { transform: scale(1.03); }
+    .result-card__pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.2rem; font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .result-card__label {
+      font-size: .9rem; color: var(--text-lt);
+      margin-top: .4rem; line-height: 1.5;
+    }
+
+    /* ── ROADMAP ── */
+    .roadmap {
+      padding: 5rem 0;
+      background: var(--navy);
+    }
+    .rm-phase {
+      display: flex; gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+    .rm-line {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .rm-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--azure); border: 3px solid var(--sky);
+      flex-shrink: 0;
+    }
+    .rm-connector {
+      width: 2px; flex: 1; min-height: 40px;
+      background: linear-gradient(var(--azure), transparent);
+      margin-top: 4px;
+    }
+    .rm-content {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      flex: 1;
+    }
+    .rm-phase-tag {
+      font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: .4rem;
+    }
+    .rm-title { font-weight: 600; margin-bottom: .35rem; }
+    .rm-body  { font-size: .85rem; color: var(--text-lt); line-height: 1.6; }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block {
+      padding: 4rem 0;
+      background: linear-gradient(90deg, #0d2248 0%, #1a3a6e 100%);
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.5;
+      position: relative;
+      padding-left: 2rem;
+      border-left: 4px solid var(--gold);
+    }
+    blockquote cite {
+      display: block; margin-top: 1rem;
+      font-size: .85rem; font-style: normal;
+      color: var(--text-lt); font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #060f1f;
+      padding: 2.5rem 0;
+      text-align: center;
+      font-size: .8rem;
+      color: rgba(255,255,255,.3);
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .3s; }
+    .delay-4 { transition-delay: .4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .stat-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+      .diagram-ring { width: 260px; height: 260px; }
+      .dr-center { width: 100px; height: 100px; font-size: .85rem; }
+      .dr-node { width: 58px; height: 58px; font-size: .62rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero__grid-overlay"></div>
+  <div class="hero__ribbon"></div>
+
+  <div class="container position-relative">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-7">
+        <p class="tag mb-3">Mural Digital · Tech Commerce</p>
+        <h1 class="hero__title display-font">
+          Gobierno Corporativo<br/>
+          <span class="gold">&amp; Gestión</span><br/>
+          de Datos
+        </h1>
+        <p class="hero__sub mt-4">
+          Un marco estratégico para garantizar la calidad, seguridad y coherencia
+          de la información en entornos de comercio electrónico de alto crecimiento.
+        </p>
+        <div class="hero__badge-strip">
+          <span class="tag">Gobernanza de Datos</span>
+          <span class="tag">Privacidad &amp; Seguridad</span>
+          <span class="tag">Eficiencia Operativa</span>
+          <span class="tag">Cumplimiento Normativo</span>
+        </div>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-center">
+        <!-- Central Diagram -->
+        <div class="diagram-ring">
+          <div class="dr-orbit"></div>
+          <div class="dr-center">
+            <i class="bi bi-diagram-3-fill" style="font-size:1.8rem;color:var(--sky)"></i>
+            <span class="mt-1" style="font-size:.8rem;color:var(--gold)">DATA<br/>GOVERNANCE</span>
+          </div>
+          <div class="dr-node dn-0"><i class="bi bi-shield-lock"></i>Seguridad</div>
+          <div class="dr-node dn-1"><i class="bi bi-bar-chart-line"></i>Calidad</div>
+          <div class="dr-node dn-2"><i class="bi bi-people"></i>Roles</div>
+          <div class="dr-node dn-3"><i class="bi bi-file-earmark-check"></i>Cumplimiento</div>
+          <div class="dr-node dn-4"><i class="bi bi-arrow-repeat"></i>Ciclo</div>
+          <div class="dr-node dn-5"><i class="bi bi-building"></i>Estrategia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__scroll">
+    <span>Explorar</span>
+    <i class="bi bi-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ═══════════════════ STATS ═══════════════════ -->
+<div class="stat-strip">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-6 col-md-3 stat-card fade-up">
+        <div class="stat-card__num">83%</div>
+        <div class="stat-card__label">de empresas reportan pérdidas por mala calidad de datos<br/><em style="opacity:.6">(Gartner, 2023)</em></div>
+      </div>
+      <div class="col-6 col-md-3 stat-card fade-up delay-1">
+        <div class="stat-card__num">$13M</div>
+        <div class="stat-card__label">costo promedio anual por datos de baja calidad por organización</div>
+      </div>
+      <div class="col-6 col-md-3 stat-card fade-up delay-2">
+        <div class="stat-card__num">60%</div>
+        <div class="stat-card__label">de violaciones de datos provienen de accesos internos no controlados</div>
+      </div>
+      <div class="col-6 col-md-3 stat-card fade-up delay-3">
+        <div class="stat-card__num">3×</div>
+        <div class="stat-card__label">más rápida la toma de decisiones con datos centralizados y fiables</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DEFINICIÓN Y PROBLEMAS ═══════════════════ -->
+<section class="problems">
+  <div class="container">
+    <div class="row mb-5 fade-up">
+      <div class="col-lg-6">
+        <p class="section-label"><i class="bi bi-info-circle me-1"></i>Punto de partida</p>
+        <h2 class="section-title">¿Qué es la Gobernanza de Datos?</h2>
+        <div class="divider"></div>
+        <p style="color:var(--text-lt);line-height:1.75;">
+          La <strong style="color:var(--white)">gobernanza de datos</strong> es el conjunto de políticas, procesos,
+          estándares y métricas que garantizan el uso efectivo y eficiente de la información en una organización.
+          Abarca la definición de quién puede realizar qué acciones sobre qué datos, en qué situaciones y con
+          qué métodos — estableciendo accountability, calidad y seguridad como pilares fundamentales.
+        </p>
+        <p class="mt-3" style="color:var(--text-lt);line-height:1.75;">
+          En el contexto de <strong style="color:var(--gold)">Tech Commerce</strong>, la ausencia de este marco
+          ha generado inconsistencias operativas, riesgos regulatorios y pérdida de ventaja competitiva en
+          un mercado donde los datos son el activo más valioso.
+        </p>
+      </div>
+      <div class="col-lg-6 d-flex align-items-center justify-content-center">
+        <!-- SVG illustration -->
+        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" style="max-width:380px;width:100%">
+          <defs>
+            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1769c5"/>
+              <stop offset="100%" stop-color="#3a9bdc"/>
+            </linearGradient>
+            <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#e8b84b" stop-opacity=".7"/>
+              <stop offset="100%" stop-color="#e8b84b" stop-opacity=".2"/>
+            </linearGradient>
+          </defs>
+          <!-- base plate -->
+          <rect x="20" y="200" width="360" height="60" rx="8" fill="rgba(26,58,110,.4)" stroke="rgba(58,155,220,.2)" stroke-width="1"/>
+          <!-- columns -->
+          <rect x="50"  y="110" width="60" height="90" rx="4" fill="url(#g1)" opacity=".6"/>
+          <rect x="130" y="80"  width="60" height="120" rx="4" fill="url(#g1)" opacity=".8"/>
+          <rect x="210" y="50"  width="60" height="150" rx="4" fill="url(#g1)"/>
+          <rect x="290" y="90"  width="60" height="110" rx="4" fill="url(#g1)" opacity=".7"/>
+          <!-- labels -->
+          <text x="80"  y="105" text-anchor="middle" fill="#e8b84b" font-size="10" font-family="DM Sans">Roles</text>
+          <text x="160" y="75"  text-anchor="middle" fill="#e8b84b" font-size="10" font-family="DM Sans">Calidad</text>
+          <text x="240" y="45"  text-anchor="middle" fill="#e8b84b" font-size="10" font-family="DM Sans">Seguridad</text>
+          <text x="320" y="85"  text-anchor="middle" fill="#e8b84b" font-size="10" font-family="DM Sans">Proceso</text>
+          <!-- trend line -->
+          <polyline points="80,155 160,120 240,80 320,130" fill="none" stroke="url(#g2)" stroke-width="2.5" stroke-dasharray="6,3"/>
+          <!-- dots -->
+          <circle cx="80"  cy="155" r="4" fill="#e8b84b"/>
+          <circle cx="160" cy="120" r="4" fill="#e8b84b"/>
+          <circle cx="240" cy="80"  r="4" fill="#e8b84b"/>
+          <circle cx="320" cy="130" r="4" fill="#e8b84b"/>
+          <!-- bottom label -->
+          <text x="200" y="235" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="10" font-family="DM Sans">Madurez del Marco de Gobernanza</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Problems -->
+    <p class="section-label fade-up"><i class="bi bi-exclamation-triangle me-1"></i>Diagnóstico</p>
+    <h2 class="section-title fade-up">Problemas Identificados en<br/><span class="gold">Tech Commerce</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-md-4 fade-up delay-1">
+        <div class="problem-card">
+          <div class="problem-card__icon ic-red">
+            <i class="bi bi-exclamation-circle"></i>
+          </div>
+          <h4 style="font-size:1.05rem;margin-bottom:.5rem;">Inconsistencia de Datos</h4>
+          <p style="font-size:.88rem;color:var(--text-lt);line-height:1.65;">
+            Los informes internos y los datos de clientes presentan discrepancias significativas.
+            Las decisiones estratégicas se toman sobre información no confiable, comprometiendo
+            la competitividad y generando costos operativos innecesarios.
+          </p>
+          <div class="mt-3 p-2" style="background:rgba(220,53,69,.08);border-radius:8px;border-left:3px solid #ff6b7a;">
+            <small style="color:#ff6b7a;"><strong>Impacto:</strong> Decisiones erradas, pérdida de clientes, reducción de ingresos.</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 fade-up delay-2">
+        <div class="problem-card">
+          <div class="problem-card__icon ic-amber">
+            <i class="bi bi-shield-exclamation"></i>
+          </div>
+          <h4 style="font-size:1.05rem;margin-bottom:.5rem;">Privacidad y Seguridad</h4>
+          <p style="font-size:.88rem;color:var(--text-lt);line-height:1.65;">
+            La empresa maneja datos sensibles de clientes sin políticas claras de privacidad.
+            La ausencia de controles eleva el riesgo de violaciones del RGPD y legislaciones locales,
+            exponiendo a la organización a sanciones legales y daño reputacional.
+          </p>
+          <div class="mt-3 p-2" style="background:rgba(232,184,75,.08);border-radius:8px;border-left:3px solid var(--gold);">
+            <small style="color:var(--gold);"><strong>Impacto:</strong> Multas regulatorias, pérdida de confianza del consumidor.</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 fade-up delay-3">
+        <div class="problem-card">
+          <div class="problem-card__icon ic-blue">
+            <i class="bi bi-diagram-2"></i>
+          </div>
+          <h4 style="font-size:1.05rem;margin-bottom:.5rem;">Eficiencia Operativa</h4>
+          <p style="font-size:.88rem;color:var(--text-lt);line-height:1.65;">
+            Los departamentos acceden y manipulan datos de forma independiente y fragmentada,
+            generando duplicidad de esfuerzos, silos de información y falta de cohesión
+            que ralentiza la ejecución y dificulta la colaboración interdepartamental.
+          </p>
+          <div class="mt-3 p-2" style="background:rgba(23,105,197,.1);border-radius:8px;border-left:3px solid var(--sky);">
+            <small style="color:var(--sky);"><strong>Impacto:</strong> Ineficiencia, duplicación de recursos, lentitud en procesos.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ QUOTE ═══════════════════ -->
+<div class="quote-block">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <blockquote class="fade-up">
+          "Sin una estrategia de gobernanza de datos, una organización navega a ciegas:
+          tiene acceso a petabytes de información pero carece de la brújula para extraer valor real."
+          <cite>— Gartner Research, Data &amp; Analytics Summit 2024</cite>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FRAMEWORK ═══════════════════ -->
+<section class="framework">
+  <div class="container position-relative">
+    <p class="section-label fade-up"><i class="bi bi-layers me-1"></i>Solución estratégica</p>
+    <h2 class="section-title fade-up">Marco de Gobernanza de Datos<br/><span class="sky">— Los 6 Pilares</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-md-6 col-lg-4 fade-up delay-1">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">01</div>
+          <div class="fw-pillar__title"><i class="bi bi-person-badge me-2"></i>Roles y Responsabilidades</div>
+          <p class="fw-pillar__body">
+            Definición de <strong style="color:var(--white)">Data Owners</strong>,
+            <strong style="color:var(--white)">Data Stewards</strong> y
+            <strong style="color:var(--white)">Data Custodians</strong> para cada dominio de datos.
+            Claridad organizacional que elimina ambigüedades y asigna accountability explícita.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-up delay-2">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">02</div>
+          <div class="fw-pillar__title"><i class="bi bi-check2-square me-2"></i>Calidad de Datos</div>
+          <p class="fw-pillar__body">
+            Establecimiento de métricas de calidad: <em>completitud, exactitud, consistencia, oportunidad
+            y unicidad</em>. Implementación de pipelines de validación automática y alertas
+            ante anomalías en flujos de datos críticos.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-up delay-3">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">03</div>
+          <div class="fw-pillar__title"><i class="bi bi-book me-2"></i>Catálogo de Datos</div>
+          <p class="fw-pillar__body">
+            Inventario centralizado de todos los activos de datos de la empresa —
+            metadatos, linaje, clasificación y propietarios —, habilitando la
+            búsqueda y entendimiento de la información como punto de entrada único.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-up delay-1">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">04</div>
+          <div class="fw-pillar__title"><i class="bi bi-shield-lock me-2"></i>Seguridad y Privacidad</div>
+          <p class="fw-pillar__body">
+            Clasificación de datos por sensibilidad, encriptación en tránsito y en reposo,
+            gestión de accesos basada en roles (RBAC) y políticas de consentimiento
+            alineadas con RGPD, CCPA y normativas sectoriales aplicables.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-up delay-2">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">05</div>
+          <div class="fw-pillar__title"><i class="bi bi-diagram-3 me-2"></i>Arquitectura &amp; Integración</div>
+          <p class="fw-pillar__body">
+            Diseño de una plataforma centralizada de datos (Data Platform) que
+            proporcione un único punto de acceso, eliminando silos, integrando
+            fuentes heterogéneas y estandarizando formatos y semántica a nivel corporativo.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 fade-up delay-3">
+        <div class="fw-pillar">
+          <div class="fw-pillar__num">06</div>
+          <div class="fw-pillar__title"><i class="bi bi-arrow-repeat me-2"></i>Cultura &amp; Mejora Continua</div>
+          <p class="fw-pillar__body">
+            Programas de alfabetización de datos (data literacy) para todos los
+            niveles, métricas de madurez periódicas y comités de revisión que
+            aseguren la evolución constante del marco ante cambios del negocio.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ LIFECYCLE ═══════════════════ -->
+<section class="lifecycle">
+  <div class="container">
+    <p class="section-label fade-up"><i class="bi bi-arrow-clockwise me-1"></i>Ciclo de vida</p>
+    <h2 class="section-title fade-up">Ciclo de Vida del Dato<br/><span class="gold">en Tech Commerce</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row g-5 align-items-start mt-1">
+      <div class="col-lg-6">
+        <div class="lifecycle-step fade-up delay-1">
+          <div class="ls-num">1</div>
+          <div>
+            <div class="ls-title">Captura y Creación</div>
+            <p class="ls-body">Registro estandarizado en el punto de origen: formularios web, APIs de terceros, sistemas POS y sensores IoT. Validación en tiempo real contra esquemas predefinidos.</p>
+          </div>
+        </div>
+        <div class="lifecycle-step fade-up delay-2">
+          <div class="ls-num">2</div>
+          <div>
+            <div class="ls-title">Almacenamiento y Organización</div>
+            <p class="ls-body">Repositorio centralizado con capas diferenciadas: datos brutos (Data Lake), procesados (Data Warehouse) y servidos (Data Mart), con clasificación automática de sensibilidad.</p>
+          </div>
+        </div>
+        <div class="lifecycle-step fade-up delay-3">
+          <div class="ls-num">3</div>
+          <div>
+            <div class="ls-title">Procesamiento y Transformación</div>
+            <p class="ls-body">Pipelines ETL/ELT orquestados con controles de calidad intermedios, linaje trazable y auditoría de transformaciones para garantizar reproducibilidad.</p>
+          </div>
+        </div>
+        <div class="lifecycle-step fade-up delay-1">
+          <div class="ls-num">4</div>
+          <div>
+            <div class="ls-title">Distribución y Consumo</div>
+            <p class="ls-body">APIs seguras, dashboards BI y modelos analíticos como puntos de consumo, con control de accesos granular basado en roles y propósito de uso.</p>
+          </div>
+        </div>
+        <div class="lifecycle-step fade-up delay-2">
+          <div class="ls-num">5</div>
+          <div>
+            <div class="ls-title">Archivo y Eliminación</div>
+            <p class="ls-body">Políticas de retención diferenciadas por tipo de dato y regulación aplicable. Eliminación certificada con trazabilidad completa para auditorías regulatorias.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-flex justify-content-center align-items-start fade-up delay-3">
+        <svg viewBox="0 0 360 400" xmlns="http://www.w3.org/2000/svg" style="max-width:340px;width:100%">
+          <!-- funnel shape -->
+          <defs>
+            <linearGradient id="funnel" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%"   stop-color="#1769c5" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#3a9bdc" stop-opacity=".3"/>
+            </linearGradient>
+          </defs>
+          <!-- layers -->
+          <rect x="20"  y="20"  width="320" height="58" rx="10" fill="url(#funnel)" opacity="1"/>
+          <rect x="40"  y="98"  width="280" height="52" rx="10" fill="url(#funnel)" opacity=".85"/>
+          <rect x="60"  y="170" width="240" height="52" rx="10" fill="url(#funnel)" opacity=".7"/>
+          <rect x="80"  y="242" width="200" height="52" rx="10" fill="url(#funnel)" opacity=".55"/>
+          <rect x="100" y="314" width="160" height="52" rx="10" fill="url(#funnel)" opacity=".4"/>
+          <!-- labels -->
+          <text x="180" y="55"  text-anchor="middle" fill="white" font-size="12" font-family="DM Sans" font-weight="600">Captura y Creación</text>
+          <text x="180" y="129" text-anchor="middle" fill="white" font-size="12" font-family="DM Sans" font-weight="600">Almacenamiento</text>
+          <text x="180" y="201" text-anchor="middle" fill="white" font-size="12" font-family="DM Sans" font-weight="600">Procesamiento</text>
+          <text x="180" y="273" text-anchor="middle" fill="white" font-size="12" font-family="DM Sans" font-weight="600">Distribución</text>
+          <text x="180" y="345" text-anchor="middle" fill="white" font-size="12" font-family="DM Sans" font-weight="600">Archivo / Eliminación</text>
+          <!-- connecting arrows -->
+          <line x1="180" y1="78"  x2="180" y2="96"  stroke="#e8b84b" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="180" y1="150" x2="180" y2="168" stroke="#e8b84b" stroke-width="2"/>
+          <line x1="180" y1="222" x2="180" y2="240" stroke="#e8b84b" stroke-width="2"/>
+          <line x1="180" y1="294" x2="180" y2="312" stroke="#e8b84b" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ROLES ═══════════════════ -->
+<section class="roles">
+  <div class="container">
+    <p class="section-label fade-up"><i class="bi bi-people me-1"></i>Estructura organizativa</p>
+    <h2 class="section-title fade-up">Roles Clave del<br/><span class="sky">Gobierno del Dato</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-lg-8 fade-up delay-1">
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;">
+          <div class="role-row">
+            <div class="role-badge" style="background:rgba(23,105,197,.2);color:var(--sky);"><i class="bi bi-person-workspace"></i></div>
+            <div>
+              <div class="role-title">Chief Data Officer (CDO)</div>
+              <div class="role-resp">Lidera la estrategia corporativa de datos. Responsable de la visión, política y cultura data-driven a nivel ejecutivo. Reporta directamente al CEO y al Consejo.</div>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-badge" style="background:rgba(232,184,75,.15);color:var(--gold);"><i class="bi bi-person-gear"></i></div>
+            <div>
+              <div class="role-title">Data Owner (Propietario de Dominio)</div>
+              <div class="role-resp">Ejecutivo de negocio responsable de un dominio de datos específico (ej. clientes, productos, finanzas). Define el acceso, calidad esperada y casos de uso autorizados.</div>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-badge" style="background:rgba(58,155,220,.15);color:#7ec8e3;"><i class="bi bi-person-check"></i></div>
+            <div>
+              <div class="role-title">Data Steward (Administrador de Datos)</div>
+              <div class="role-resp">Perfil técnico-funcional que opera el día a día de la calidad, documentación y cumplimiento de políticas en su dominio. Enlace entre negocio y tecnología.</div>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-badge" style="background:rgba(108,117,125,.15);color:#adb5bd;"><i class="bi bi-database-gear"></i></div>
+            <div>
+              <div class="role-title">Data Custodian (Custodio Técnico)</div>
+              <div class="role-resp">Equipo de TI responsable de la infraestructura, seguridad física y lógica de los sistemas de datos. Implementa los controles definidos por Owners y Stewards.</div>
+            </div>
+          </div>
+          <div class="role-row" style="border-bottom:none;">
+            <div class="role-badge" style="background:rgba(25,135,84,.15);color:#75c99e;"><i class="bi bi-graph-up-arrow"></i></div>
+            <div>
+              <div class="role-title">Data Analyst / Scientist</div>
+              <div class="role-resp">Consumidor avanzado de datos que transforma la información en insights accionables. Responsable de documentar supuestos, limitaciones y metodologías analíticas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 fade-up delay-2">
+        <div style="background:linear-gradient(145deg,rgba(23,105,197,.15),rgba(11,27,53,.8));border:1px solid rgba(23,105,197,.25);border-radius:16px;padding:2rem;height:100%;">
+          <h5 class="display-font mb-3" style="color:var(--gold);">Comité de Gobernanza</h5>
+          <p style="font-size:.87rem;color:var(--text-lt);line-height:1.65;margin-bottom:1.5rem;">
+            Órgano colegiado presidido por el CDO que reúne a todos los Data Owners
+            de forma periódica para revisar el estado del marco, resolver conflictos
+            de prioridades y aprobar cambios de política.
+          </p>
+          <hr style="border-color:rgba(255,255,255,.08);"/>
+          <p style="font-size:.8rem;color:var(--text-lt);margin-bottom:.5rem;"><strong style="color:var(--sky)">Frecuencia:</strong> Reunión mensual obligatoria + reuniones ad-hoc.</p>
+          <p style="font-size:.8rem;color:var(--text-lt);margin-bottom:.5rem;"><strong style="color:var(--sky)">Quórum:</strong> 60% de Data Owners + CDO.</p>
+          <p style="font-size:.8rem;color:var(--text-lt);"><strong style="color:var(--sky)">Entregable:</strong> Acta de decisiones, KPIs de calidad y plan de acción trimestral.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SECURITY ═══════════════════ -->
+<section class="security">
+  <div class="container">
+    <p class="section-label fade-up"><i class="bi bi-shield me-1"></i>Privacidad y seguridad</p>
+    <h2 class="section-title fade-up">Protección de Datos<br/><span class="gold">del Cliente</span></h2>
+    <div class="divider fade-up"></div>
+    <p class="fade-up mb-5" style="color:var(--text-lt);max-width:620px;line-height:1.75;">
+      En el comercio electrónico, la confianza del cliente es el activo más frágil y más valioso.
+      Un incidente de seguridad puede destruir en horas lo que se construyó en años. Las siguientes
+      medidas forman el escudo regulatorio y técnico de Tech Commerce.
+    </p>
+
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-3 fade-up delay-1">
+        <div class="sec-card">
+          <i class="bi bi-lock-fill sec-icon" style="color:var(--gold);"></i>
+          <div class="sec-title">Encriptación E2E</div>
+          <p style="font-size:.85rem;color:var(--text-lt);line-height:1.6;">
+            Datos en tránsito (TLS 1.3) y en reposo (AES-256). Gestión de claves mediante HSM dedicado
+            o KMS en la nube con rotación automática trimestral.
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 fade-up delay-2">
+        <div class="sec-card">
+          <i class="bi bi-person-lock sec-icon" style="color:var(--sky);"></i>
+          <div class="sec-title">Control de Acceso RBAC</div>
+          <p style="font-size:.85rem;color:var(--text-lt);line-height:1.6;">
+            Acceso mínimo necesario (principio de menor privilegio). Autenticación multifactor (MFA)
+            obligatoria para datos sensibles. Revisión semestral de permisos.
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 fade-up delay-3">
+        <div class="sec-card">
+          <i class="bi bi-file-earmark-text sec-icon" style="color:#75c99e;"></i>
+          <div class="sec-title">Gestión de Consentimiento</div>
+          <p style="font-size:.85rem;color:var(--text-lt);line-height:1.6;">
+            Plataforma CMP (Consent Management Platform) para registro, actualización y revocación
+            de consentimientos. Cumplimiento RGPD, CCPA y Ley 1581 de Colombia.
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 fade-up delay-1">
+        <div class="sec-card">
+          <i class="bi bi-eye sec-icon" style="color:#c6a0f6;"></i>
+          <div class="sec-title">Auditoría y Monitoreo</div>
+          <p style="font-size:.85rem;color:var(--text-lt);line-height:1.6;">
+            Logs inmutables de acceso y modificación. SIEM para detección de anomalías en tiempo real.
+            Reporte mensual de incidentes al Comité de Gobernanza.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RESULTS ═══════════════════ -->
+<section class="results">
+  <div class="container position-relative">
+    <p class="section-label fade-up"><i class="bi bi-stars me-1"></i>Resultados esperados</p>
+    <h2 class="section-title fade-up">Impacto Proyectado del<br/><span class="gold">Marco Implementado</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-6 col-lg-3 fade-up delay-1">
+        <div class="result-card">
+          <div class="result-card__pct">↑40%</div>
+          <div class="result-card__label">Mejora en velocidad de toma de decisiones gracias a datos confiables y accesibles</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 fade-up delay-2">
+        <div class="result-card">
+          <div class="result-card__pct">↓70%</div>
+          <div class="result-card__label">Reducción de incidentes de calidad de datos en reportes operativos</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 fade-up delay-3">
+        <div class="result-card">
+          <div class="result-card__pct">100%</div>
+          <div class="result-card__label">Trazabilidad y auditoría del ciclo de vida de datos sensibles de clientes</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 fade-up delay-4">
+        <div class="result-card">
+          <div class="result-card__pct">↑25%</div>
+          <div class="result-card__label">Eficiencia operativa inter-departamental al eliminar silos y duplicidades</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ROADMAP ═══════════════════ -->
+<section class="roadmap">
+  <div class="container">
+    <p class="section-label fade-up"><i class="bi bi-calendar3 me-1"></i>Plan de implementación</p>
+    <h2 class="section-title fade-up">Hoja de Ruta<br/><span class="sky">Tech Commerce — 18 Meses</span></h2>
+    <div class="divider fade-up"></div>
+
+    <div class="row mt-4">
+      <div class="col-lg-7">
+        <div class="rm-phase fade-up delay-1">
+          <div class="rm-line">
+            <div class="rm-dot"></div>
+            <div class="rm-connector"></div>
+          </div>
+          <div class="rm-content">
+            <div class="rm-phase-tag">Fase 1 · Meses 1–3</div>
+            <div class="rm-title">Diagnóstico y Diseño del Marco</div>
+            <p class="rm-body">Inventario de activos de datos existentes, evaluación de madurez, constitución del Comité de Gobernanza, definición de roles y diseño del catálogo de datos corporativo.</p>
+          </div>
+        </div>
+        <div class="rm-phase fade-up delay-2">
+          <div class="rm-line">
+            <div class="rm-dot"></div>
+            <div class="rm-connector"></div>
+          </div>
+          <div class="rm-content">
+            <div class="rm-phase-tag">Fase 2 · Meses 4–8</div>
+            <div class="rm-title">Implementación de Plataforma y Políticas</div>
+            <p class="rm-body">Despliegue de la plataforma centralizada de datos, integración de fuentes prioritarias, implementación de controles de seguridad, encriptación y sistema de gestión de consentimiento.</p>
+          </div>
+        </div>
+        <div class="rm-phase fade-up delay-3">
+          <div class="rm-line">
+            <div class="rm-dot"></div>
+            <div class="rm-connector"></div>
+          </div>
+          <div class="rm-content">
+            <div class="rm-phase-tag">Fase 3 · Meses 9–13</div>
+            <div class="rm-title">Activación y Habilitación Organizacional</div>
+            <p class="rm-body">Capacitación en data literacy para todos los niveles, onboarding de departamentos a la plataforma centralizada, implementación de KPIs de calidad y dashboards de monitoreo.</p>
+          </div>
+        </div>
+        <div class="rm-phase fade-up delay-1">
+          <div class="rm-line">
+            <div class="rm-dot" style="background:var(--gold);border-color:var(--gold);"></div>
+          </div>
+          <div class="rm-content" style="border-color:rgba(232,184,75,.3);">
+            <div class="rm-phase-tag" style="color:var(--gold);">Fase 4 · Meses 14–18</div>
+            <div class="rm-title">Optimización y Mejora Continua</div>
+            <p class="rm-body">Evaluación de madurez post-implementación, auditoría regulatoria, ajustes del marco basados en retroalimentación, expansión a nuevos dominios y preparación para certificaciones ISO 27001 / SOC 2.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-flex align-items-center justify-content-center fade-up delay-3">
+        <!-- Horizontal progress visual -->
+        <div style="width:100%;max-width:340px;">
+          <p style="font-size:.8rem;color:var(--text-lt);margin-bottom:1.5rem;text-align:center;letter-spacing:.05em;text-transform:uppercase;">Dimensiones de Madurez</p>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;">Calidad de Datos</span><span style="font-size:.82rem;color:var(--gold);">Avanzado</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;"><div style="width:85%;height:100%;background:linear-gradient(90deg,var(--azure),var(--sky));border-radius:10px;"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;">Seguridad y Privacidad</span><span style="font-size:.82rem;color:var(--gold);">Avanzado</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;"><div style="width:90%;height:100%;background:linear-gradient(90deg,var(--azure),var(--sky));border-radius:10px;"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;">Cultura Data-Driven</span><span style="font-size:.82rem;color:var(--gold);">Maduro</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;"><div style="width:75%;height:100%;background:linear-gradient(90deg,var(--azure),var(--sky));border-radius:10px;"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;">Centralización y Plataforma</span><span style="font-size:.82rem;color:var(--gold);">Avanzado</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;"><div style="width:88%;height:100%;background:linear-gradient(90deg,var(--azure),var(--sky));border-radius:10px;"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;">Cumplimiento Normativo</span><span style="font-size:.82rem;color:var(--gold);">Completo</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;"><div style="width:95%;height:100%;background:linear-gradient(90deg,var(--gold),#e8b84b);border-radius:10px;"></div></div>
+          </div>
+          <p style="font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;margin-top:1rem;">Estado proyectado al mes 18</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="container">
+    <p class="mb-1"><strong>Tech Commerce · Mural Digital de Gobernanza y Gestión de Datos</strong></p>
+    <p>Marco estratégico para la transformación data-driven — Gobierno Corporativo &amp; Gestión de Datos · 2025</p>
+    <p style="margin-top:.5rem;font-size:.72rem;">Referencias: Gartner Data &amp; Analytics, DAMA International DMBOK v2, RGPD (UE) 2016/679, ISO/IEC 27001:2022</p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Intersection Observer for fade-up animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
